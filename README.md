@@ -15,8 +15,9 @@
 
 # Scripts
 
-- `npm start`
-- `npm build`
+- `npm start` - To start development server.
+- `npm build` - To generate production build.
+- `npm run test` - To run tests.
 
 # How To Run
 
