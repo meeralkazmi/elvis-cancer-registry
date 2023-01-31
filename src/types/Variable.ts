@@ -3,7 +3,7 @@ export interface IInformationLevel {
   name: string;
   nameEn: string;
   shortName: string;
-  sortering: number;
+  sortering?: number;
 }
 export interface ICategory {
   id: number;
@@ -18,7 +18,7 @@ export interface IDataType {
   id: number;
   name: string;
   nameEn: string;
-  sortering: number;
+  sortering: number | null;
   description: string;
   descriptionEn: string;
 }
@@ -35,8 +35,8 @@ export interface IStatus {
   id: number;
   name: string;
   nameEn: string;
-  description: string;
-  descriptionEn: string;
+  description: string | null;
+  descriptionEn: string | null;
 }
 export interface IVariableType {
   id: number;
@@ -45,26 +45,26 @@ export interface IVariableType {
   description: string;
   descriptionEn: string;
   managed: boolean;
-  createdBy: string;
-  createdOn: string;
+  createdBy: string | null;
+  createdOn: string | null;
   updatedBy: string;
   updatedOn: string;
-  deletedBy: string;
-  deletedOn: string;
+  deletedBy: string | null;
+  deletedOn: string | null;
 }
 export interface ITemporality {
   id: number;
   name: string;
   nameEn: string;
-  description: string;
-  descriptionEn: string;
+  description: string | null;
+  descriptionEn: string | null;
   managed: boolean;
-  createdBy: string;
-  createdOn: string;
-  updatedBy: string;
-  updatedOn: string;
-  deletedBy: string;
-  deletedOn: string;
+  createdBy: string | null;
+  createdOn: string | null;
+  updatedBy: string | null;
+  updatedOn: string | null;
+  deletedBy: string | null;
+  deletedOn: string | null;
 }
 
 export interface IVariable {
@@ -92,7 +92,7 @@ export interface IVariable {
   approvedOn: string;
   approvedBy: string;
   dataSize: number;
-  background: string;
+  background?: string;
   existsInPrimary: boolean;
   existsInRecurrence: boolean;
   validForExtraction: number;

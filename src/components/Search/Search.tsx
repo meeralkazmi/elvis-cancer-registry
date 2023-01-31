@@ -39,7 +39,9 @@ export const Search: React.FC<ISearch> = (props) => {
 
   return (
     <Autocomplete
-      id="variable-seearch"
+      id="variable-search"
+      data-testid="variable-search"
+      
       getOptionLabel={(option) =>
         typeof option === "string" ? option : option.description
       }
@@ -63,13 +65,13 @@ export const Search: React.FC<ISearch> = (props) => {
           <SearchIconWrapper>
             <SearchIcon />
           </SearchIconWrapper>
-          <StyledInputBase placeholder={`${t("search")}...`} {...params} />
+          <StyledInputBase data-testid="search-input" name="search-input" placeholder={`${t("search")}...`} {...params} />
         </SearchContiner>
       )}
       PopperComponent={StyledPopper}
       renderOption={(props, option) => {
         return (
-          <li {...props}>
+          <li data-testid="search-results" {...props}>
             <Box px={2} py={1} >
               <Typography variant="h6" color="primary" >{option.name}</Typography>
               <Typography variant="caption" >{option.description}</Typography>

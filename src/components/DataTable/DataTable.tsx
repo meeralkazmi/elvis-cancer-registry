@@ -131,6 +131,7 @@ export const DataTable: React.FC<IDataTable> = (props) => {
                     {props.header.map((head) => {
                       return (
                         <TableCell
+                          data-testid="datacell"
                           key={`table-cell-${head.key}`}
                           sx={{ cursor: "pointer", fontSize: 16, borderWidth: 2 }}
                         >
