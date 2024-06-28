@@ -1,9 +1,9 @@
 import React from "react";
-import { Toolbar, Typography } from "@mui/material";
+import { Toolbar, Typography, Box } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Export } from "../Export";
 import { IVariable } from "../../types/Variable";
-import { Box } from "@mui/system";
+import { Filter } from "../Filter/Filter";
 
 interface IActionbar {
   header: Array<{
@@ -20,23 +20,35 @@ export const Actionbar: React.FC<IActionbar> = (props) => {
   return (
     <Toolbar
       sx={{
-        pl: { sm: 2 },
-        pr: { xs: 1, sm: 1 },
-
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-start",
+        p: { sm: 2 },
       }}
     >
-      <Typography
-        sx={{ flex: "1 1 100%" }}
-        variant="h4"
-        id="tableTitle"
-        component="div"
-        color="primary"
-        fontWeight="bold"
+      <Box>
+        <Typography
+          variant="h4"
+          id="tableTitle"
+          component="div"
+          color="primary"
+          fontWeight="bold"
+        >
+          {t("variables")}
+        </Typography>
+      </Box>
+
+      <Box
+        sx={{ display: "flex", alignItems: "center", mt: 1, flexWrap: "wrap" }}
       >
-        {t("variables")}
-      </Typography>
-      <Box pr={2}>
-        <Export selectedVariables={props.data} />
+        <Filter
+          onSelect={function (): void {
+            throw new Error("Function not implemented.");
+          }}
+        />
+        <Box sx={{ mb: 2 }}>
+          <Export selectedVariables={props.data} />
+        </Box>
       </Box>
     </Toolbar>
   );

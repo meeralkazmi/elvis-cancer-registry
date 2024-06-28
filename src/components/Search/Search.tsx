@@ -24,7 +24,10 @@ export const Search: React.FC<ISearch> = (props) => {
 
   const searchVariables = useCallback(async () => {
     const variableService = new VariableService();
-    const res = await variableService.searchVariables(inputValue);
+    const res = await variableService.searchFilters({
+      keyword: inputValue,
+    });
+    console.log("res ::", res);
     setOptions(res);
   }, [inputValue]);
 
@@ -41,7 +44,6 @@ export const Search: React.FC<ISearch> = (props) => {
     <Autocomplete
       id="variable-search"
       data-testid="variable-search"
-      
       getOptionLabel={(option) =>
         typeof option === "string" ? option : option.description
       }
@@ -65,20 +67,27 @@ export const Search: React.FC<ISearch> = (props) => {
           <SearchIconWrapper>
             <SearchIcon />
           </SearchIconWrapper>
-          <StyledInputBase data-testid="search-input" name="search-input" placeholder={`${t("search")}...`} {...params} />
+          <StyledInputBase
+            data-testid="search-input"
+            name="search-input"
+            placeholder={`${t("search")}...`}
+            {...params}
+          />
         </SearchContiner>
       )}
       PopperComponent={StyledPopper}
       renderOption={(props, option) => {
         return (
           <li data-testid="search-results" {...props}>
-            <Box px={2} py={1} >
-              <Typography variant="h6" color="primary" >{option.name}</Typography>
-              <Typography variant="caption" >{option.description}</Typography>
+            <Box px={2} py={1}>
+              <Typography variant="h6" color="primary">
+                {option.name}
+              </Typography>
+              <Typography variant="caption">{option.description}</Typography>
             </Box>
             <Divider />
           </li>
-        )
+        );
       }}
     />
   );

@@ -4,8 +4,9 @@ import { useAppDispatch, useAppSelector } from "../config/store";
 import { RootLayout } from "../layouts/RootLayout";
 import { retrieveVariablesAsync } from "../slices/variableSlice";
 import { Actionbar, DataTable, InfoDialog } from "../components/";
+import { VariableService } from "../services/VariableService";
 
-interface IHomePage { }
+interface IHomePage {}
 
 const tableHeader = [
   {
@@ -52,6 +53,23 @@ export const HomePage: React.FC<IHomePage> = () => {
   useEffect(() => {
     dispatch(retrieveVariablesAsync());
   }, [dispatch]);
+
+  const fetchData = async () => {
+    try {
+      const service = new VariableService();
+      const data = await service.searchFilters({
+        keyword: "a",
+      });
+
+      console.log("data ::", data);
+    } catch (e) {
+      console.log("e", e);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const getDataFromVariables = () => {
     return variables.value.map((variable) => {
