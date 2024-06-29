@@ -1,0 +1,114 @@
+{
+  "tags": [
+    {
+      "Id": "1",
+      "Name": "Data collections",
+      "Children": [
+        {
+          "Id": "4",
+          "Name": "Cancer cases - diagnostics and primary treatment"
+        },
+        {
+          "Id": "7",
+          "Name": "Prostate"
+        },
+        {
+          "Id": "16",
+          "Name": "Cancer cases - additional information"
+        },
+        {
+          "Id": "33",
+          "Name": "Colorectal cancer"
+        },
+        {
+          "Id": "36",
+          "Name": "Lymphoid malignancies"
+        },
+        {
+          "Id": "40",
+          "Name": "Lung cancer"
+        },
+        {
+          "Id": "41",
+          "Name": "Breast cancer"
+        },
+        {
+          "Id": "42",
+          "Name": "Ovarian cancer"
+        },
+        {
+          "Id": "44",
+          "Name": "Cervical cancer"
+        },
+        {
+          "Id": "45",
+          "Name": "Melanoma"
+        },
+        {
+          "Id": "46",
+          "Name": "Sarcomas"
+        },
+        {
+          "Id": "54",
+          "Name": "Childhood cancer"
+        },
+        {
+          "Id": "61",
+          "Name": "Pancreatic cancer"
+        }
+      ]
+    },
+    {
+      "Id": "24",
+      "Name": "ColonScreen Norway",
+      "Children": [
+        {
+          "Id": "24",
+          "Name": "ColonScreen Norway - HAP"
+        }
+      ]
+    },
+    {
+      "Id": "56",
+      "Name": "Administrative",
+      "Children": [
+        {
+          "Id": "56",
+          "Name": "Radiotherapy data from radiotherapy machines"
+        }
+      ]
+    },
+    {
+      "Id": "27",
+      "Name": "Predefined datasets",
+      "Children": [
+        {
+          "Id": "27",
+          "Name": "Systemic anticancer treatment"
+        }
+      ]
+    },
+    {
+      "Id": "48",
+      "Name": "OMOP",
+      "Children": [
+        {
+          "Id": "49",
+          "Name": "krg_omop"
+        },
+        {
+          "Id": "50",
+          "Name": "blueberry_omop"
+        },
+        {
+          "Id": "55",
+          "Name": "florence_omop"
+        },
+        {
+          "Id": "57",
+          "Name": "OUS Digione"
+        }
+      ]
+    }
+  ]
+}

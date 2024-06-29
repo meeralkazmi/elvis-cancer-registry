@@ -28,6 +28,9 @@ export const variableSlice = createSlice({
     retrieveVariables: (state) => {
       return { value: state.value, status: "idle" };
     },
+    updateVariables: (state, action) => {
+      state.value = action.payload; // Update the value with payload data
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -43,5 +46,7 @@ export const variableSlice = createSlice({
       });
   },
 });
+
+export const { updateVariables } = variableSlice.actions;
 
 export default variableSlice;

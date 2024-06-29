@@ -10,12 +10,20 @@ import {
   Typography,
   ButtonGroup,
   FormControl,
+  IconButton,
+  Checkbox,
+  ListItemText,
 } from "@mui/material";
-
-import { IVariable, ICategory } from "../../types/Variable";
-import { VariableService } from "../../services/VariableService";
-import { useTranslation } from "react-i18next";
+import SearchIcon from "@mui/icons-material/Search";
 import { RotateLeft } from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
+import { useAppDispatch } from "../../config/store";
+import { updateVariables } from "../../slices/variableSlice";
+import { VariableService } from "../../services/VariableService";
+import CategoriesData from "../../data/CategoriesData.json";
+import TagsData from "../../data/TagsData.json";
+import RegistriesData from "../../data/RegisteriesData.json";
+import { IVariable } from "../../types/Variable";
 
 interface IFiltersProps {
   onSelect: (variable: IVariable) => void;
@@ -28,42 +36,30 @@ interface IFiltersState {
   categories: number[];
   keyword: string;
   registries: number[];
+  validForExtraction: boolean;
 }
 
 const initialFilters: IFiltersState = {
   validFrom: "",
-  validTo: "1959",
+  validTo: "",
   tags: [],
   categories: [],
   keyword: "",
   registries: [],
+  validForExtraction: false,
 };
 
 export const Filter: React.FC<IFiltersProps> = ({ onSelect }) => {
-  const [variables, setVariables] = useState<IVariable[]>([]);
   const [filters, setFilters] = useState<IFiltersState>(initialFilters);
-  const [categories, setCategories] = useState<ICategory[]>([]);
-  const [tags, setTags] = useState<number[]>([]);
-  const [qualityRegisters, setQualityRegisters] = useState<number[]>([]);
+  const [categories, setCategories] = useState<any[]>(
+    CategoriesData.categories
+  );
+  const [tags, setTags] = useState<any[]>(TagsData.tags);
+  const [qualityRegisters, setQualityRegisters] = useState<any[]>(
+    RegistriesData.registries
+  );
   const { t } = useTranslation();
-  const [selectedButton, setSelectedButton] = useState<string | null>(null);
-
-  const fetchFilterValues = useCallback(async () => {
-    const variableService = new VariableService();
-    try {
-      const response = await variableService.searchFilters({
-        categories: [],
-        registries: [],
-        tags: [],
-        valid_from: "",
-        valid_to: "",
-        keyword: "",
-        latestSearchTime: "",
-      });
-    } catch (error) {
-      console.error("Error fetching filter values:", error);
-    }
-  }, []);
+  const dispatch = useAppDispatch();
 
   const fetchVariables = useCallback(async () => {
     const variableService = new VariableService();
@@ -75,26 +71,29 @@ export const Filter: React.FC<IFiltersProps> = ({ onSelect }) => {
         valid_from: filters.validFrom,
         valid_to: filters.validTo,
         keyword: filters.keyword,
-        latestSearchTime: "", // Provide the latest search time if needed
+        validForExtraction: filters.validForExtraction,
       });
 
-      //setVariables(response.variables);
+      dispatch(updateVariables(response));
     } catch (error) {
       console.error("Error fetching variables:", error);
     }
-  }, [filters]);
-
-  useEffect(() => {
-    fetchFilterValues();
-  }, [fetchFilterValues]);
+  }, [
+    dispatch,
+    filters.categories,
+    filters.keyword,
+    filters.registries,
+    filters.tags,
+    filters.validForExtraction,
+    filters.validFrom,
+    filters.validTo,
+  ]);
 
   useEffect(() => {
     fetchVariables();
   }, [filters, fetchVariables]);
 
-  const handleFilterChange = (
-    event: React.ChangeEvent<{ name?: string; value: unknown }>
-  ) => {
+  const handleFilterChange = (event: any) => {
     const { name, value } = event.target;
     setFilters((prevFilters) => ({
       ...prevFilters,
@@ -102,34 +101,122 @@ export const Filter: React.FC<IFiltersProps> = ({ onSelect }) => {
     }));
   };
 
-  const handleChipDelete = (chipToDelete: number, type: string) => {
-    if (type === "tags") {
-      setFilters((prevFilters) => ({
-        ...prevFilters,
-        tags: prevFilters.tags.filter((tag) => tag !== chipToDelete),
-      }));
-    } else if (type === "registries") {
-      setFilters((prevFilters) => ({
-        ...prevFilters,
-        registries: prevFilters.registries.filter(
-          (registry) => registry !== chipToDelete
-        ),
-      }));
+  const handleTagChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    tagId: number
+  ) => {
+    const updatedTags = handleNestedChange(tags, filters.tags, tagId);
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      tags: updatedTags,
+    }));
+  };
+
+  const handleCategoryChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    categoryId: number
+  ) => {
+    const updatedCategories = handleNestedChange(
+      categories,
+      filters.categories,
+      categoryId
+    );
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      categories: updatedCategories,
+    }));
+  };
+  const handleNestedChange = (
+    items: any[],
+    selectedItems: number[],
+    itemId: number
+  ): number[] => {
+    const item = items.find((item) => item.Id === itemId);
+    if (!item) return selectedItems;
+
+    if (item.Children && item.Children.length > 0) {
+      const childrenIds = item.Children.map(
+        (child: { Id: number }) => child.Id
+      );
+      const allSelected = childrenIds.every((id: number) =>
+        selectedItems.includes(id)
+      );
+
+      let updatedSelectedItems: number[];
+      if (allSelected) {
+        updatedSelectedItems = selectedItems.filter(
+          (id) => !childrenIds.includes(id) && id !== itemId
+        );
+      } else {
+        updatedSelectedItems = [...selectedItems, ...childrenIds, itemId];
+      }
+      return updatedSelectedItems;
+    } else {
+      const isSelected = selectedItems.includes(itemId);
+      if (isSelected) {
+        return selectedItems.filter((id) => id !== itemId);
+      } else {
+        return [...selectedItems, itemId];
+      }
     }
   };
 
-  const handleButtonClick = (button: string) => {
-    setSelectedButton((prevSelectedButton) =>
-      prevSelectedButton === button ? null : button
-    );
+  const handleChipDelete = (chipToDelete: number, type: string) => {
+    setFilters((prevFilters) => {
+      switch (type) {
+        case "tags":
+          return {
+            ...prevFilters,
+            tags: prevFilters.tags.filter((tag) => tag !== chipToDelete),
+          };
+        case "registries":
+          return {
+            ...prevFilters,
+            registries: prevFilters.registries.filter(
+              (registry) => registry !== chipToDelete
+            ),
+          };
+        case "categories":
+          return {
+            ...prevFilters,
+            categories: prevFilters.categories.filter(
+              (category) => category !== chipToDelete
+            ),
+          };
+        default:
+          return prevFilters;
+      }
+    });
   };
+
+  const toggleValidForExtraction = useCallback(() => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      validForExtraction: !prevFilters.validForExtraction,
+    }));
+  }, []);
+
   const handleResetFilters = () => {
     setFilters(initialFilters);
   };
+
   const years = Array.from({ length: 8 }, (_, i) => 1953 + i); // 1953 to 1960
+
   return (
     <Box>
       <Grid container spacing={1} alignItems="center">
+        <TextField
+          id="outlined-basic"
+          label="Search"
+          variant="outlined"
+          size="small"
+          name="keyword"
+          onChange={handleFilterChange}
+        />
+        <IconButton aria-label="delete">
+          <SearchIcon />
+        </IconButton>
+
         <Grid item xs={6} sm={4} md={2}>
           <FormControl fullWidth size="small">
             <Typography>{t("validFrom")}</Typography>
@@ -137,7 +224,7 @@ export const Filter: React.FC<IFiltersProps> = ({ onSelect }) => {
               label={t("validFrom")}
               name="validFrom"
               value={filters.validFrom}
-              //onChange={handleFilterChange}
+              onChange={handleFilterChange}
             >
               {years.map((year) => (
                 <MenuItem key={year} value={year}>
@@ -155,7 +242,7 @@ export const Filter: React.FC<IFiltersProps> = ({ onSelect }) => {
               label={t("validTo")}
               name="validTo"
               value={filters.validTo}
-              //onChange={handleFilterChange}
+              onChange={handleFilterChange}
             >
               {years.map((year) => (
                 <MenuItem key={year} value={year}>
@@ -170,7 +257,7 @@ export const Filter: React.FC<IFiltersProps> = ({ onSelect }) => {
           <Select
             multiple
             value={filters.tags}
-            // onChange={handleFilterChange}
+            onChange={handleFilterChange}
             name="tags"
             displayEmpty
             fullWidth
@@ -179,16 +266,38 @@ export const Filter: React.FC<IFiltersProps> = ({ onSelect }) => {
               (selected as number[]).map((tagId) => (
                 <Chip
                   key={tagId}
-                  label={tagId.toString()}
+                  label={tags.find((tag) => tag.Id === tagId)?.Name || ""}
                   onDelete={() => handleChipDelete(tagId, "tags")}
                 />
               ))
             }
           >
-            {tags.map((tag) => (
-              <MenuItem key={tag} value={tag}>
-                {tag}
-              </MenuItem>
+            {tags.map((tags) => (
+              <React.Fragment key={tags.Id}>
+                <MenuItem value={tags.Id}>
+                  <Checkbox
+                    checked={filters.tags.includes(tags.Id)}
+                    onChange={(event) => handleTagChange(event, tags.Id)}
+                  />
+                  <ListItemText primary={tags.Name} />
+                </MenuItem>
+                {tags.Children &&
+                  tags.Children.map((child: any) => (
+                    <MenuItem
+                      key={child.Id}
+                      value={child.Id}
+                      style={{ paddingLeft: 32 }}
+                    >
+                      <Checkbox
+                        checked={filters.tags.includes(child.Id)}
+                        onChange={(event) =>
+                          handleCategoryChange(event, child.Id)
+                        }
+                      />
+                      <ListItemText primary={child.Name} />
+                    </MenuItem>
+                  ))}
+              </React.Fragment>
             ))}
           </Select>
         </Grid>
@@ -198,7 +307,7 @@ export const Filter: React.FC<IFiltersProps> = ({ onSelect }) => {
           <Select
             multiple
             value={filters.registries}
-            // onChange={handleFilterChange}
+            onChange={handleFilterChange}
             name="registries"
             displayEmpty
             fullWidth
@@ -207,25 +316,30 @@ export const Filter: React.FC<IFiltersProps> = ({ onSelect }) => {
               (selected as number[]).map((registryId) => (
                 <Chip
                   key={registryId}
-                  label={registryId.toString()}
+                  label={
+                    qualityRegisters.find(
+                      (registry) => registry.Id === registryId
+                    )?.Name || ""
+                  }
                   onDelete={() => handleChipDelete(registryId, "registries")}
                 />
               ))
             }
           >
             {qualityRegisters.map((registry) => (
-              <MenuItem key={registry} value={registry}>
-                {registry}
+              <MenuItem key={registry.Id} value={registry.Id}>
+                {registry.Name}
               </MenuItem>
             ))}
           </Select>
         </Grid>
+
         <Grid item xs={6} sm={4} md={2}>
           <Typography>{t("categories")}</Typography>
           <Select
             multiple
             value={filters.categories}
-            // onChange={handleFilterChange}
+            onChange={handleFilterChange}
             name="categories"
             displayEmpty
             fullWidth
@@ -235,21 +349,46 @@ export const Filter: React.FC<IFiltersProps> = ({ onSelect }) => {
                 <Chip
                   key={categoryId}
                   label={
-                    categories.find((category) => category.id === categoryId)
-                      ?.name || ""
+                    categories.find((category) => category.Id === categoryId)
+                      ?.Name || ""
                   }
-                  onDelete={() => {}}
+                  onDelete={() => handleChipDelete(categoryId, "categories")}
                 />
               ))
             }
           >
             {categories.map((category) => (
-              <MenuItem key={category.id} value={category.id}>
-                {category.name}
-              </MenuItem>
+              <React.Fragment key={category.Id}>
+                <MenuItem value={category.Id}>
+                  <Checkbox
+                    checked={filters.categories.includes(category.Id)}
+                    onChange={(event) =>
+                      handleCategoryChange(event, category.Id)
+                    }
+                  />
+                  <ListItemText primary={category.Name} />
+                </MenuItem>
+                {category.Children &&
+                  category.Children.map((child: any) => (
+                    <MenuItem
+                      key={child.Id}
+                      value={child.Id}
+                      style={{ paddingLeft: 32 }}
+                    >
+                      <Checkbox
+                        checked={filters.categories.includes(child.Id)}
+                        onChange={(event) =>
+                          handleCategoryChange(event, child.Id)
+                        }
+                      />
+                      <ListItemText primary={child.Name} />
+                    </MenuItem>
+                  ))}
+              </React.Fragment>
             ))}
           </Select>
         </Grid>
+
         <Grid item xs={6} sm={4} md={2}>
           <Button
             onClick={handleResetFilters}
@@ -260,25 +399,19 @@ export const Filter: React.FC<IFiltersProps> = ({ onSelect }) => {
             <RotateLeft />
           </Button>
         </Grid>
-
+        <Grid item xs={12}></Grid>
         <Grid item xs={12}>
           <ButtonGroup disableElevation aria-label="button group">
             <Button
-              variant={
-                selectedButton === "Deliverable Variable"
-                  ? "contained"
-                  : "outlined"
-              }
-              onClick={() => handleButtonClick("Deliverable Variable")}
+              variant={filters.validForExtraction ? "contained" : "outlined"}
+              onClick={toggleValidForExtraction}
               size="small"
             >
               Deliverable Variable
             </Button>
             <Button
-              variant={
-                selectedButton === "Alle Variable" ? "contained" : "outlined"
-              }
-              onClick={() => handleButtonClick("Alle Variable")}
+              variant={filters.validForExtraction ? "outlined" : "contained"}
+              onClick={toggleValidForExtraction}
               size="small"
             >
               Alle Variable

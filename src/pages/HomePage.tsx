@@ -16,32 +16,24 @@ const tableHeader = [
     type: "string",
     sortable: true,
   },
-  { label: "Tech Name", key: "techName", type: "string", sortable: true },
   {
-    label: "Category",
-    key: "category",
-    keyEn: "categoryEn",
+    label: "Deliverables",
+    key: "validForExtraction",
     type: "string",
     sortable: true,
   },
   {
-    label: "Data Type",
-    key: "dataType",
-    keyEn: "dataTypeEn",
+    label: "Valid From",
+    key: "validFrom",
     type: "string",
     sortable: true,
   },
   {
-    label: "Registertation Method",
-    key: "registrationMethod",
-    keyEn: "registrationMethodEn",
+    label: "Recomended Tech Name",
+    key: "techName",
     type: "string",
     sortable: true,
   },
-  { label: "Approved By", key: "approvedBy", type: "string", sortable: true },
-
-  { label: "Approved On", key: "approvedOn", type: "date", sortable: true },
-  { label: "Active", key: "active", type: "boolean", sortable: false },
 ];
 
 export const HomePage: React.FC<IHomePage> = () => {
@@ -53,23 +45,6 @@ export const HomePage: React.FC<IHomePage> = () => {
   useEffect(() => {
     dispatch(retrieveVariablesAsync());
   }, [dispatch]);
-
-  const fetchData = async () => {
-    try {
-      const service = new VariableService();
-      const data = await service.searchFilters({
-        keyword: "a",
-      });
-
-      console.log("data ::", data);
-    } catch (e) {
-      console.log("e", e);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   const getDataFromVariables = () => {
     return variables.value.map((variable) => {

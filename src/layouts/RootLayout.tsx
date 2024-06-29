@@ -24,7 +24,12 @@ export const RootLayout: React.FC<IRootLayout> = (props) => {
   const { i18n } = useTranslation();
 
   const theme = createTheme(
-    { palette: { primary: { main: "#46658A", light: "#ccd7e5" }, secondary: { main: "#fff" } } },
+    {
+      palette: {
+        primary: { main: "#46658A", light: "#ccd7e5" },
+        secondary: { main: "#fff" },
+      },
+    },
     i18n.language === "en" ? enUS : nbNO
   );
 

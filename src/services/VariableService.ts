@@ -9,7 +9,7 @@ export class VariableService {
   getAllVariables = async () => {
     const res = await fetch(`${this.baseApiUrl}/variables/:filtered?`);
     const reJson: any = await res.json();
-    return reJson?.variableList;
+    return reJson?.variableList ?? [];
   };
 
   getVariableById = async (id: string) => {
@@ -24,7 +24,7 @@ export class VariableService {
     valid_from?: string;
     valid_to?: string;
     keyword?: string;
-    latestSearchTime?: string;
+    validForExtraction?: boolean;
   }): Promise<IVariable[]> => {
     const url = new URL(`${this.baseApiUrl}/variables/:filtered`);
 
@@ -52,13 +52,15 @@ export class VariableService {
     if (filters.keyword) {
       url.searchParams.append("keyword", filters.keyword);
     }
-    if (filters.latestSearchTime) {
-      url.searchParams.append("latestSearchTime", filters.latestSearchTime);
+    if (typeof filters.validForExtraction === "boolean") {
+      url.searchParams.append(
+        "validForExtraction",
+        `${filters.validForExtraction}`
+      );
     }
 
     const res = await fetch(url.toString());
     const resJson: any = await res.json();
-    console.log("resJson ::", resJson);
     return resJson?.variableList ?? [];
   };
 }

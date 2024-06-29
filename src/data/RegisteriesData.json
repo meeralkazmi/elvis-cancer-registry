@@ -1,0 +1,76 @@
+{
+  "registries": [
+    {
+      "Id": "1",
+      "Name": "Colorectal cancer"
+    },
+    {
+      "Id": "2",
+      "Name": "Prostate cancer"
+    },
+    {
+      "Id": "3",
+      "Name": "Breast cancer"
+    },
+    {
+      "Id": "4",
+      "Name": "Malignant melanoma"
+    },
+    {
+      "Id": "5",
+      "Name": "Lung cancer"
+    },
+    {
+      "Id": "6",
+      "Name": "Childhood cancer"
+    },
+    {
+      "Id": "7",
+      "Name": "Gynecological cancer"
+    },
+    {
+      "Id": "8",
+      "Name": "Lymphoid malignancies"
+    },
+    {
+      "Id": "9",
+      "Name": "Oesophagus and stomach cancer"
+    },
+    {
+      "Id": "10",
+      "Name": "Sarcomas"
+    },
+    {
+      "Id": "11",
+      "Name": "CervicalScreen Norway"
+    },
+    {
+      "Id": "12",
+      "Name": "BreastScreen Norway"
+    },
+    {
+      "Id": "13",
+      "Name": "ColonScreen Norway"
+    },
+    {
+      "Id": "14",
+      "Name": "Pancreatic cancer"
+    },
+    {
+      "Id": "15",
+      "Name": "Janus Serum Bank"
+    },
+    {
+      "Id": "16",
+      "Name": "Solid tumors without a clinical registry"
+    },
+    {
+      "Id": "17",
+      "Name": "Non-solid tumors without a clinical registry"
+    },
+    {
+      "Id": "18",
+      "Name": "Brain and spinal cord tumors"
+    }
+  ]
+}

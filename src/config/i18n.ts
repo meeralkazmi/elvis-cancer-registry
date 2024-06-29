@@ -45,6 +45,7 @@ i18n
           existsInRecurrence: "Exists In Recurrence",
           search: "Search",
           noVariable: "No Variable",
+          validForExtraction: "Deliverables",
         },
       },
       nb: {
@@ -74,6 +75,7 @@ i18n
           existsInRecurrence: "Eksisterer i gjentakelse",
           search: "Søk",
           noVariable: "Ingen variabel",
+          validForExtraction: "Deliverables",
         },
       },
     },

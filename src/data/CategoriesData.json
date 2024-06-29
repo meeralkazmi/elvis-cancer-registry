@@ -1,0 +1,98 @@
+{
+  "categories": [
+    {
+      "Id": "1",
+      "Name": "Person"
+    },
+    {
+      "Id": "2",
+      "Name": "Disease history",
+      "Children": [
+        {
+          "Id": "3",
+          "Name": "Medical history, not further specified"
+        },
+        {
+          "Id": "4",
+          "Name": "Cause of examination"
+        },
+        {
+          "Id": "5",
+          "Name": "Health status at diagnostics and treatment"
+        }
+      ]
+    },
+    {
+      "Id": "6",
+      "Name": "Diagnostics",
+      "Children": [
+        {
+          "Id": "7",
+          "Name": "Diagnostics, not further specified"
+        },
+        {
+          "Id": "8",
+          "Name": "Diagnostic methods"
+        },
+        {
+          "Id": "9",
+          "Name": "Tumor characteristics and extent of disease"
+        },
+        {
+          "Id": "10",
+          "Name": "Institution"
+        }
+      ]
+    },
+    {
+      "Id": "11",
+      "Name": "Treatment",
+      "Children": [
+        {
+          "Id": "12",
+          "Name": "Treatment, not further specified"
+        },
+        {
+          "Id": "13",
+          "Name": "Neoadjuvant therapy"
+        },
+        {
+          "Id": "14",
+          "Name": "Surgery"
+        },
+        {
+          "Id": "15",
+          "Name": "Radiotherapy"
+        },
+        {
+          "Id": "16",
+          "Name": "Medical and other treatment"
+        },
+        {
+          "Id": "17",
+          "Name": "Complications and evaluation after treatment"
+        },
+        {
+          "Id": "18",
+          "Name": "Inclusion in clinical trial"
+        },
+        {
+          "Id": "19",
+          "Name": "Indications and contraindications for treatment"
+        },
+        {
+          "Id": "20",
+          "Name": "Follow-up"
+        },
+        {
+          "Id": "21",
+          "Name": "PROMs"
+        },
+        {
+          "Id": "22",
+          "Name": "CRN administration"
+        }
+      ]
+    }
+  ]
+}
