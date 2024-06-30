@@ -2,75 +2,93 @@
   "registries": [
     {
       "Id": "1",
-      "Name": "Colorectal cancer"
+      "Name": "Tykkogendetarmskreft",
+      "NameEn": "Colorectal cancer"
     },
     {
       "Id": "2",
-      "Name": "Prostate cancer"
+      "Name": "Prostatakreft",
+      "NameEn": "Prostate cancer"
     },
     {
       "Id": "3",
-      "Name": "Breast cancer"
+      "Name": "Brystkreft",
+      "NameEn": "Breast cancer"
     },
     {
       "Id": "4",
-      "Name": "Malignant melanoma"
+      "Name": "Melanom",
+      "NameEn": "Malignant melanoma"
     },
     {
       "Id": "5",
-      "Name": "Lung cancer"
+      "Name": "Lungekreft",
+      "NameEn": "Lung cancer"
     },
     {
       "Id": "6",
-      "Name": "Childhood cancer"
+      "Name": "Barnekreft",
+      "NameEn": "Childhood cancer"
     },
     {
       "Id": "7",
-      "Name": "Gynecological cancer"
+      "Name": "GynekologiskKreft",
+      "NameEn": "Gynecological cancer"
     },
     {
       "Id": "8",
-      "Name": "Lymphoid malignancies"
+      "Name": "Lymfoidemaligniteter",
+      "NameEn": "Lymphoid malignancies"
     },
     {
       "Id": "9",
-      "Name": "Oesophagus and stomach cancer"
+      "Name": "Spiserørogmagesekkreft",
+      "NameEn": "Oesophagus and stomach cancer"
     },
     {
       "Id": "10",
-      "Name": "Sarcomas"
+      "Name": "Sarkomer",
+      "NameEn": "Sarcomas"
     },
     {
       "Id": "11",
-      "Name": "CervicalScreen Norway"
+      "Name": "Livmorhalsprogrammet",
+      "NameEn": "CervicalScreen Norway"
     },
     {
       "Id": "12",
-      "Name": "BreastScreen Norway"
+      "Name": "Mammografiprogrammet",
+      "NameEn": "BreastScreen Norway"
     },
     {
       "Id": "13",
-      "Name": "ColonScreen Norway"
+      "Name": "Tarmscreeningprogrammet",
+      "NameEn": "ColonScreen Norway"
     },
     {
       "Id": "14",
-      "Name": "Pancreatic cancer"
+      "Name": "Pankreaskreft",
+      "NameEn": "Pancreatic cancer"
     },
     {
       "Id": "15",
-      "Name": "Janus Serum Bank"
+      "Name": "Janusserumbank",
+      "NameEn": "Janus Serum Bank"
     },
     {
       "Id": "16",
-      "Name": "Solid tumors without a clinical registry"
+      "Name": "Solidetumorsutenkvalitetsregister",
+      "NameEn": "Solid tumors without a clinical registry"
     },
     {
       "Id": "17",
-      "Name": "Non-solid tumors without a clinical registry"
+      "Name": "Nonsolidetumorsutenkvalitetsregister",
+      "NameEn": "Non-solid tumors without a clinical registry"
     },
     {
       "Id": "18",
-      "Name": "Brain and spinal cord tumors"
+      "Name": "Hjerne-ogryggmargssvulst",
+      "NameEn": "Brain and spinal cord tumors"
     }
   ]
 }

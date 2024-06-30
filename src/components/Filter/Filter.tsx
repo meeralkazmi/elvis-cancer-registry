@@ -10,20 +10,21 @@ import {
   Typography,
   ButtonGroup,
   FormControl,
-  IconButton,
   Checkbox,
   ListItemText,
+  Stack,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { RotateLeft } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
-import { useAppDispatch } from "../../config/store";
+import { useAppDispatch, useAppSelector } from "../../config/store";
 import { updateVariables } from "../../slices/variableSlice";
 import { VariableService } from "../../services/VariableService";
 import CategoriesData from "../../data/CategoriesData.json";
 import TagsData from "../../data/TagsData.json";
 import RegistriesData from "../../data/RegisteriesData.json";
 import { IVariable } from "../../types/Variable";
+import { Export } from "../Export";
 
 interface IFiltersProps {
   onSelect: (variable: IVariable) => void;
@@ -38,7 +39,11 @@ interface IFiltersState {
   registries: number[];
   validForExtraction: boolean;
 }
-
+interface ISelectItem {
+  Id: number;
+  Name: string;
+  Children: { Id: number; Name: string }[];
+}
 const initialFilters: IFiltersState = {
   validFrom: "",
   validTo: "",
@@ -49,18 +54,16 @@ const initialFilters: IFiltersState = {
   validForExtraction: false,
 };
 
-export const Filter: React.FC<IFiltersProps> = ({ onSelect }) => {
+export const Filter: React.FC<IFiltersProps> = () => {
   const [filters, setFilters] = useState<IFiltersState>(initialFilters);
-  const [categories, setCategories] = useState<any[]>(
-    CategoriesData.categories
-  );
-  const [tags, setTags] = useState<any[]>(TagsData.tags);
-  const [qualityRegisters, setQualityRegisters] = useState<any[]>(
-    RegistriesData.registries
-  );
+
+  const categories: any = CategoriesData.categories;
+  const tags: any = TagsData.tags;
+  const qualityRegisters: any = RegistriesData.registries;
+
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-
+  const variables = useAppSelector((state) => state.variables);
   const fetchVariables = useCallback(async () => {
     const variableService = new VariableService();
     try {
@@ -78,16 +81,7 @@ export const Filter: React.FC<IFiltersProps> = ({ onSelect }) => {
     } catch (error) {
       console.error("Error fetching variables:", error);
     }
-  }, [
-    dispatch,
-    filters.categories,
-    filters.keyword,
-    filters.registries,
-    filters.tags,
-    filters.validForExtraction,
-    filters.validFrom,
-    filters.validTo,
-  ]);
+  }, [dispatch, filters]);
 
   useEffect(() => {
     fetchVariables();
@@ -101,10 +95,7 @@ export const Filter: React.FC<IFiltersProps> = ({ onSelect }) => {
     }));
   };
 
-  const handleTagChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    tagId: number
-  ) => {
+  const handleTagChange = (tagId: number) => {
     const updatedTags = handleNestedChange(tags, filters.tags, tagId);
     setFilters((prevFilters) => ({
       ...prevFilters,
@@ -126,67 +117,89 @@ export const Filter: React.FC<IFiltersProps> = ({ onSelect }) => {
       categories: updatedCategories,
     }));
   };
+
+  const handleRegistryChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    registryId: number
+  ) => {
+    const updatedRegistries = handleNestedChange(
+      qualityRegisters,
+      filters.registries,
+      registryId
+    );
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      registries: updatedRegistries,
+    }));
+  };
+
   const handleNestedChange = (
     items: any[],
     selectedItems: number[],
     itemId: number
   ): number[] => {
-    const item = items.find((item) => item.Id === itemId);
-    if (!item) return selectedItems;
+    const findItemById = (items: any[], itemId: number): any | undefined => {
+      for (const item of items) {
+        if (item.Id === itemId) {
+          return item;
+        }
+        if (item.Children && item.Children.length > 0) {
+          const foundInChildren = findItemById(item.Children, itemId);
+          if (foundInChildren) {
+            return foundInChildren;
+          }
+        }
+      }
+      return undefined;
+    };
 
-    if (item.Children && item.Children.length > 0) {
-      const childrenIds = item.Children.map(
-        (child: { Id: number }) => child.Id
-      );
-      const allSelected = childrenIds.every((id: number) =>
-        selectedItems.includes(id)
-      );
+    const toggleItem = (items: any[], itemId: number): number[] => {
+      const item = findItemById(items, itemId);
+      if (!item) return selectedItems;
 
-      let updatedSelectedItems: number[];
-      if (allSelected) {
-        updatedSelectedItems = selectedItems.filter(
-          (id) => !childrenIds.includes(id) && id !== itemId
+      if (item.Children && item.Children.length > 0) {
+        const childrenIds = item.Children.map(
+          (child: { Id: number }) => child.Id
         );
+        const allSelected = childrenIds.every((id: number) =>
+          selectedItems.includes(id)
+        );
+
+        let updatedSelectedItems: number[];
+
+        if (allSelected) {
+          updatedSelectedItems = selectedItems.filter(
+            (id) => !childrenIds.includes(id) && id !== itemId
+          );
+        } else {
+          updatedSelectedItems = Array.from(
+            new Set([...selectedItems, ...childrenIds, itemId])
+          );
+        }
+        return updatedSelectedItems;
       } else {
-        updatedSelectedItems = [...selectedItems, ...childrenIds, itemId];
+        const isSelected = selectedItems.includes(itemId);
+        if (isSelected) {
+          return selectedItems.filter((id) => id !== itemId);
+        } else {
+          return [...selectedItems, itemId];
+        }
       }
-      return updatedSelectedItems;
-    } else {
-      const isSelected = selectedItems.includes(itemId);
-      if (isSelected) {
-        return selectedItems.filter((id) => id !== itemId);
-      } else {
-        return [...selectedItems, itemId];
-      }
-    }
+    };
+
+    return toggleItem(items, itemId);
   };
 
-  const handleChipDelete = (chipToDelete: number, type: string) => {
-    setFilters((prevFilters) => {
-      switch (type) {
-        case "tags":
-          return {
-            ...prevFilters,
-            tags: prevFilters.tags.filter((tag) => tag !== chipToDelete),
-          };
-        case "registries":
-          return {
-            ...prevFilters,
-            registries: prevFilters.registries.filter(
-              (registry) => registry !== chipToDelete
-            ),
-          };
-        case "categories":
-          return {
-            ...prevFilters,
-            categories: prevFilters.categories.filter(
-              (category) => category !== chipToDelete
-            ),
-          };
-        default:
-          return prevFilters;
-      }
-    });
+  const handleChipDelete = (
+    chipToDelete: number,
+    type: keyof IFiltersState
+  ) => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [type]: (prevFilters[type] as number[]).filter(
+        (item) => item !== chipToDelete
+      ),
+    }));
   };
 
   const toggleValidForExtraction = useCallback(() => {
@@ -202,204 +215,280 @@ export const Filter: React.FC<IFiltersProps> = ({ onSelect }) => {
 
   const years = Array.from({ length: 8 }, (_, i) => 1953 + i); // 1953 to 1960
 
+  const getChipName = useCallback(
+    (itemId: number, data: any[]) => {
+      let tagName = "";
+
+      data.every((dataItem) => {
+        if (Array.isArray(dataItem?.Children)) {
+          const child = dataItem.Children.find((c: any) => c.Id === itemId);
+          if (child) {
+            tagName = t(child.Name);
+          }
+        }
+
+        if (dataItem.Id === itemId) {
+          tagName = t(dataItem.Name);
+        }
+        return !tagName;
+      });
+
+      return tagName;
+    },
+    [t]
+  );
+  console.log("Translation key:", t("Syke historie ikke konkrete spesifisert"));
+
   return (
-    <Box>
-      <Grid container spacing={1} alignItems="center">
-        <TextField
-          id="outlined-basic"
-          label="Search"
-          variant="outlined"
-          size="small"
-          name="keyword"
-          onChange={handleFilterChange}
-        />
-        <IconButton aria-label="delete">
-          <SearchIcon />
-        </IconButton>
+    <Box p={2}>
+      <Grid container spacing={1} alignItems="flex-start">
+        <Grid item xs={12} sm={6} md={4}>
+          <TextField
+            sx={{ width: "92%" }}
+            id="outlined-basic"
+            placeholder={`${t("search")}...`}
+            variant="outlined"
+            size="small"
+            name="keyword"
+            value={filters.keyword}
+            onChange={(e) => {
+              handleFilterChange(e);
+              setFilters({ ...filters, keyword: e.target.value });
+            }}
+            InputProps={{
+              endAdornment: <SearchIcon color="primary" />,
+            }}
+            fullWidth
+          />
+        </Grid>
 
         <Grid item xs={6} sm={4} md={2}>
-          <FormControl fullWidth size="small">
-            <Typography>{t("validFrom")}</Typography>
-            <Select
-              label={t("validFrom")}
-              name="validFrom"
-              value={filters.validFrom}
-              onChange={handleFilterChange}
-            >
-              {years.map((year) => (
-                <MenuItem key={year} value={year}>
-                  {year}
-                </MenuItem>
-              ))}
-            </Select>
+          <FormControl size="small">
+            <Box display="flex" alignItems="center">
+              <Typography variant="body1" component="div" mr={1}>
+                {t("validFrom")}
+              </Typography>
+              <Select
+                label={t("validFrom")}
+                name="validFrom"
+                value={filters.validFrom}
+                onChange={handleFilterChange}
+                sx={{ width: "100px" }}
+              >
+                {years.map((year) => (
+                  <MenuItem key={year} value={year}>
+                    {year}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Box>
           </FormControl>
         </Grid>
 
         <Grid item xs={6} sm={4} md={2}>
           <FormControl fullWidth size="small">
-            <Typography>{t("validTo")}</Typography>
-            <Select
-              label={t("validTo")}
-              name="validTo"
-              value={filters.validTo}
-              onChange={handleFilterChange}
-            >
-              {years.map((year) => (
-                <MenuItem key={year} value={year}>
-                  {year}
-                </MenuItem>
-              ))}
-            </Select>
+            <Box display="flex" alignItems="center">
+              <Typography variant="body1" component="div" mr={1}>
+                {t("validTo")}
+              </Typography>
+              <Select
+                label={t("validTo")}
+                name="validTo"
+                value={filters.validTo}
+                onChange={handleFilterChange}
+                sx={{ width: "100px" }}
+              >
+                {years.map((year) => (
+                  <MenuItem key={year} value={year}>
+                    {year}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Box>
           </FormControl>
         </Grid>
-        <Grid item xs={6} sm={4} md={2}>
-          <Typography>{t("tags")}</Typography>
-          <Select
-            multiple
-            value={filters.tags}
-            onChange={handleFilterChange}
-            name="tags"
-            displayEmpty
-            fullWidth
-            size="small"
-            renderValue={(selected) =>
-              (selected as number[]).map((tagId) => (
-                <Chip
-                  key={tagId}
-                  label={tags.find((tag) => tag.Id === tagId)?.Name || ""}
-                  onDelete={() => handleChipDelete(tagId, "tags")}
-                />
-              ))
-            }
-          >
-            {tags.map((tags) => (
-              <React.Fragment key={tags.Id}>
-                <MenuItem value={tags.Id}>
-                  <Checkbox
-                    checked={filters.tags.includes(tags.Id)}
-                    onChange={(event) => handleTagChange(event, tags.Id)}
-                  />
-                  <ListItemText primary={tags.Name} />
-                </MenuItem>
-                {tags.Children &&
-                  tags.Children.map((child: any) => (
-                    <MenuItem
-                      key={child.Id}
-                      value={child.Id}
-                      style={{ paddingLeft: 32 }}
-                    >
-                      <Checkbox
-                        checked={filters.tags.includes(child.Id)}
-                        onChange={(event) =>
-                          handleCategoryChange(event, child.Id)
-                        }
-                      />
-                      <ListItemText primary={child.Name} />
-                    </MenuItem>
-                  ))}
-              </React.Fragment>
-            ))}
-          </Select>
-        </Grid>
-
-        <Grid item xs={6} sm={4} md={2}>
-          <Typography>{t("registries")}</Typography>
-          <Select
-            multiple
-            value={filters.registries}
-            onChange={handleFilterChange}
-            name="registries"
-            displayEmpty
-            fullWidth
-            size="small"
-            renderValue={(selected) =>
-              (selected as number[]).map((registryId) => (
-                <Chip
-                  key={registryId}
-                  label={
-                    qualityRegisters.find(
-                      (registry) => registry.Id === registryId
-                    )?.Name || ""
-                  }
-                  onDelete={() => handleChipDelete(registryId, "registries")}
-                />
-              ))
-            }
-          >
-            {qualityRegisters.map((registry) => (
-              <MenuItem key={registry.Id} value={registry.Id}>
-                {registry.Name}
-              </MenuItem>
-            ))}
-          </Select>
-        </Grid>
-
-        <Grid item xs={6} sm={4} md={2}>
-          <Typography>{t("categories")}</Typography>
-          <Select
-            multiple
-            value={filters.categories}
-            onChange={handleFilterChange}
-            name="categories"
-            displayEmpty
-            fullWidth
-            size="small"
-            renderValue={(selected) =>
-              (selected as number[]).map((categoryId) => (
-                <Chip
-                  key={categoryId}
-                  label={
-                    categories.find((category) => category.Id === categoryId)
-                      ?.Name || ""
-                  }
-                  onDelete={() => handleChipDelete(categoryId, "categories")}
-                />
-              ))
-            }
-          >
-            {categories.map((category) => (
-              <React.Fragment key={category.Id}>
-                <MenuItem value={category.Id}>
-                  <Checkbox
-                    checked={filters.categories.includes(category.Id)}
-                    onChange={(event) =>
-                      handleCategoryChange(event, category.Id)
-                    }
-                  />
-                  <ListItemText primary={category.Name} />
-                </MenuItem>
-                {category.Children &&
-                  category.Children.map((child: any) => (
-                    <MenuItem
-                      key={child.Id}
-                      value={child.Id}
-                      style={{ paddingLeft: 32 }}
-                    >
-                      <Checkbox
-                        checked={filters.categories.includes(child.Id)}
-                        onChange={(event) =>
-                          handleCategoryChange(event, child.Id)
-                        }
-                      />
-                      <ListItemText primary={child.Name} />
-                    </MenuItem>
-                  ))}
-              </React.Fragment>
-            ))}
-          </Select>
-        </Grid>
-
         <Grid item xs={6} sm={4} md={2}>
           <Button
             onClick={handleResetFilters}
-            variant="outlined"
-            size="small"
-            sx={{ mt: 3 }}
-          >
-            <RotateLeft />
-          </Button>
+            variant="contained"
+            size="large"
+            startIcon={<RotateLeft />}
+            sx={{ width: "50px" }}
+          />
         </Grid>
+        <Grid item xs={6} sm={4} md={2}>
+          {" "}
+          <Export selectedVariables={variables.value} />{" "}
+        </Grid>
+        <Grid item xs={12}>
+          <Typography>{t("tags")}</Typography>
+          <FormControl
+            sx={{ width: "30%", paddingRight: 2, paddingBottom: 2 }}
+            size="small"
+          >
+            <Select
+              multiple
+              value={filters.tags}
+              onChange={handleFilterChange}
+              name="tags"
+              displayEmpty
+            >
+              {tags.map((tag: ISelectItem) => (
+                <React.Fragment key={tag.Id}>
+                  <MenuItem value={tag.Id}>
+                    <Checkbox
+                      checked={filters.tags.includes(tag.Id)}
+                      onChange={() => handleTagChange(tag.Id)}
+                    />
+
+                    <ListItemText primary={t(tag.Name)} />
+                  </MenuItem>
+                  {tag.Children &&
+                    tag.Children.map((child: any) => (
+                      <MenuItem
+                        key={child.Id}
+                        value={child.Id}
+                        style={{ paddingLeft: 32 }}
+                      >
+                        <Checkbox
+                          checked={filters.tags.includes(child.Id)}
+                          onChange={() => handleTagChange(child.Id)}
+                        />
+
+                        <ListItemText primary={t(child.Name)} />
+                      </MenuItem>
+                    ))}
+                </React.Fragment>
+              ))}
+            </Select>
+          </FormControl>
+          {filters.tags.map((tagId) => (
+            <Chip
+              key={tagId}
+              label={getChipName(tagId, tags)}
+              onDelete={() => handleChipDelete(tagId, "tags")}
+              sx={{ marginBottom: 2 }}
+              color="primary"
+              size="small"
+            />
+          ))}
+        </Grid>
+
         <Grid item xs={12}></Grid>
+
+        <Grid item xs={12}>
+          <Typography>{t("registries")}</Typography>
+          <FormControl
+            sx={{ width: "30%", paddingRight: 2, paddingBottom: 2 }}
+            size="small"
+          >
+            <Select
+              multiple
+              value={filters.registries}
+              onChange={handleFilterChange}
+              name="registries"
+              displayEmpty
+            >
+              {qualityRegisters.map((registry: ISelectItem) => (
+                <React.Fragment key={registry.Id}>
+                  <MenuItem value={registry.Id}>
+                    <Checkbox
+                      checked={filters.registries.includes(registry.Id)}
+                      onChange={(event) =>
+                        handleRegistryChange(event, registry.Id)
+                      }
+                    />
+
+                    <ListItemText primary={t(registry.Name)} />
+                  </MenuItem>
+                  {registry.Children &&
+                    registry.Children.map((child: any) => (
+                      <MenuItem
+                        key={child.Id}
+                        value={child.Id}
+                        style={{ paddingLeft: 32 }}
+                      >
+                        <Checkbox
+                          checked={filters.registries.includes(child.Id)}
+                          onChange={(event) =>
+                            handleRegistryChange(event, child.Id)
+                          }
+                        />
+                        <ListItemText primary={t(child.Name)} />
+                      </MenuItem>
+                    ))}
+                </React.Fragment>
+              ))}
+            </Select>
+          </FormControl>
+          {filters.registries.map((registryId) => (
+            <Chip
+              key={registryId}
+              label={getChipName(registryId, qualityRegisters)}
+              onDelete={() => handleChipDelete(registryId, "registries")}
+              sx={{ marginBottom: 2 }}
+              color="primary"
+              size="small"
+            />
+          ))}
+        </Grid>
+
+        <Grid item xs={12}>
+          <Typography>{t("categories")}</Typography>
+          <FormControl
+            sx={{ width: "30%", paddingRight: 2, paddingBottom: 2 }}
+            size="small"
+          >
+            <Select
+              multiple
+              value={filters.categories}
+              onChange={handleFilterChange}
+              name="categories"
+              displayEmpty
+            >
+              {categories.map((category: ISelectItem) => (
+                <React.Fragment key={category.Id}>
+                  <MenuItem value={category.Id}>
+                    <Checkbox
+                      checked={filters.categories.includes(category.Id)}
+                      onChange={(event) =>
+                        handleCategoryChange(event, category.Id)
+                      }
+                    />
+                    <ListItemText primary={t(category.Name)} />
+                  </MenuItem>
+                  {category.Children &&
+                    category.Children.map((child: any) => (
+                      <MenuItem
+                        key={child.Id}
+                        value={child.Id}
+                        style={{ paddingLeft: 32 }}
+                      >
+                        <Checkbox
+                          checked={filters.categories.includes(child.Id)}
+                          onChange={(event) =>
+                            handleCategoryChange(event, child.Id)
+                          }
+                        />
+                        <ListItemText primary={t(child.Name)} />
+                      </MenuItem>
+                    ))}
+                </React.Fragment>
+              ))}
+            </Select>
+          </FormControl>
+          {filters.categories.map((categoryId) => (
+            <Chip
+              key={categoryId}
+              label={getChipName(categoryId, categories)}
+              onDelete={() => handleChipDelete(categoryId, "categories")}
+              color="primary"
+              size="small"
+              sx={{ marginBottom: 2 }}
+            />
+          ))}
+        </Grid>
+
         <Grid item xs={12}>
           <ButtonGroup disableElevation aria-label="button group">
             <Button
@@ -407,14 +496,14 @@ export const Filter: React.FC<IFiltersProps> = ({ onSelect }) => {
               onClick={toggleValidForExtraction}
               size="small"
             >
-              Deliverable Variable
+              {t("deliverableVariable")}
             </Button>
             <Button
               variant={filters.validForExtraction ? "outlined" : "contained"}
               onClick={toggleValidForExtraction}
               size="small"
             >
-              Alle Variable
+              {t("allVariable")}
             </Button>
           </ButtonGroup>
         </Grid>

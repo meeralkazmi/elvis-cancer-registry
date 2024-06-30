@@ -5,7 +5,7 @@ import { IVariable } from "../../types/Variable";
 
 interface IExport {
   selectedVariables: Array<IVariable>;
-  variant?: "light" | "dark"
+  variant?: "light" | "dark";
 }
 
 const exportHeader = [
@@ -15,49 +15,13 @@ const exportHeader = [
   },
   { label: "Tech Name", key: "techName" },
   {
-    label: "Category",
-    key: "category",
-  },
-  {
     label: "Description",
     key: "description",
   },
-  {
-    label: "Data Type",
-    key: "dataType",
-  },
-  {
-    label: "Variable Type",
-    key: "variableType",
-  },
-  {
-    label: "Example",
-    key: "exmaple",
-  },
-  {
-    label: "Created On",
-    key: "createdOn",
-  },
-  {
-    label: "Created By",
-    key: "createdBy",
-  },
-  {
-    label: "Data Extraction Comment",
-    key: "dataExtractionComment",
-  },
-  {
-    label: "Registertation Method",
-    key: "registrationMethod",
-  },
-  { label: "Approved By", key: "approvedBy" },
+  { label: "Quality", key: "descriptionOfQuality" },
 
-  { label: "Approved On", key: "approvedOn" },
-  { label: "Status", key: "status" },
-  { label: "Received In", key: "receivedIn" },
-  { label: "Given Out", key: "givenOut" },
-  { label: "Required", key: "required" },
-  { label: "Exist In Primary", key: "existsInPrimary" },
+  { label: "Deliverable", key: "existsInPrimary" },
+  { label: "URl", key: "url" },
 ];
 
 export const Export: React.FC<IExport> = (props) => {
@@ -66,22 +30,11 @@ export const Export: React.FC<IExport> = (props) => {
       return {
         name: variable.name,
         techName: variable.techName,
-        category: variable.category.name,
         description: variable.description,
-        dataType: variable.dataType.name,
-        variableType: variable.variableType.name,
-        exmaple: variable.example,
-        createdOn: variable.createdOn,
-        createdBy: variable.createdBy,
-        dataExtractionComment: variable.dataExtractionComment,
-        registrationMethod: variable.registrationMethod,
-        approvedBy: variable.approvedBy,
-        approvedOn: variable.approvedOn,
-        status: variable.status.name,
-        receivedIn: variable.receivedIn ? "Yes" : "No",
-        givenOut: variable.givenOut ? "Yes" : "No",
-        required: variable.required ? "Yes" : "No",
         existsInPrimary: variable.existsInPrimary ? "Yes" : "No",
+        quality: variable.descriptionOfQuality,
+        informationLevel: variable.informationLevel,
+        url: `https://metadata.kreftregisteret.no/variables/detail/${variable.id}`,
       };
     });
   };
@@ -92,7 +45,10 @@ export const Export: React.FC<IExport> = (props) => {
       headers={exportHeader}
       filename="elvis-variables.csv"
     >
-      <CloudDownload fontSize="large" color={props.variant === "light" ? "secondary" : "primary"} />
+      <CloudDownload
+        fontSize="large"
+        color={props.variant === "light" ? "secondary" : "primary"}
+      />
     </CSVLink>
   );
 };

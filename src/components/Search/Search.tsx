@@ -27,7 +27,6 @@ export const Search: React.FC<ISearch> = (props) => {
     const res = await variableService.searchFilters({
       keyword: inputValue,
     });
-    console.log("res ::", res);
     setOptions(res);
   }, [inputValue]);
 

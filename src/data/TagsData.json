@@ -2,111 +2,136 @@
   "tags": [
     {
       "Id": "1",
-      "Name": "Data collections",
+      "Name": "Datasamlinger",
+      "NameEn": "Data collections",
       "Children": [
         {
           "Id": "4",
-          "Name": "Cancer cases - diagnostics and primary treatment"
+          "Name": "Krefttilfellerdiagnostikkogprimærbehandling",
+          "NameEn": "Cancer cases - diagnostics and primary treatment"
         },
         {
           "Id": "7",
-          "Name": "Prostate"
+          "Name": "Prostatakreftt",
+          "NameEn": "Prostate"
         },
         {
           "Id": "16",
-          "Name": "Cancer cases - additional information"
+          "Name": "Krefttilfellertilleggsinformasjon",
+          "NameEn": "Cancer cases - additional information"
         },
         {
           "Id": "33",
-          "Name": "Colorectal cancer"
+          "Name": "Tykkogendtarmskreft",
+          "NameEn": "Colorectal cancer"
         },
         {
           "Id": "36",
-          "Name": "Lymphoid malignancies"
+          "Name": "Lymfoidemalignteter",
+          "NameEn": "Lymphoid malignancies"
         },
         {
           "Id": "40",
-          "Name": "Lung cancer"
+          "Name": "Lungekreftt",
+          "NameEn": "Lung cancer"
         },
         {
           "Id": "41",
-          "Name": "Breast cancer"
+          "Name": "Brystkreftt",
+          "NameEn": "Breast cancer"
         },
         {
           "Id": "42",
-          "Name": "Ovarian cancer"
+          "Name": "Eggstokkreft",
+          "NameEn": "Ovarian cancer"
         },
         {
           "Id": "44",
-          "Name": "Cervical cancer"
+          "Name": "Livmorhalskreft",
+          "NameEn": "Cervical cancer"
         },
         {
           "Id": "45",
-          "Name": "Melanoma"
+          "Name": "Melanomm",
+          "NameEn": "Melanoma"
         },
         {
           "Id": "46",
-          "Name": "Sarcomas"
+          "Name": "Sarkommer",
+          "NameEn": "Sarcomas"
         },
         {
           "Id": "54",
-          "Name": "Childhood cancer"
+          "Name": "Barnekreftt",
+          "NameEn": "Childhood cancer"
         },
         {
           "Id": "61",
-          "Name": "Pancreatic cancer"
+          "Name": "Pankreaskreftt",
+          "NameEn": "Pancreatic cancer"
         }
       ]
     },
     {
       "Id": "24",
-      "Name": "ColonScreen Norway",
+      "Name": "Tarmscreeningprogramet",
+      "NameEn": "ColonScreen Norway",
       "Children": [
         {
           "Id": "24",
-          "Name": "ColonScreen Norway - HAP"
+          "Name": "TarmscreeningprogrammetHAP",
+          "NameEn": "ColonScreen Norway - HAP"
         }
       ]
     },
     {
       "Id": "56",
-      "Name": "Administrative",
+      "Name": "Administrativt",
+      "NameEn": "Administrative",
       "Children": [
         {
           "Id": "56",
-          "Name": "Radiotherapy data from radiotherapy machines"
+          "Name": "Stråledatafrastrålemaskiner",
+          "NameEn": "Radiotherapy data from radiotherapy machines"
         }
       ]
     },
     {
       "Id": "27",
-      "Name": "Predefined datasets",
+      "Name": "Predefinertedatasett",
+      "NameEn": "Predefined datasets",
       "Children": [
         {
           "Id": "27",
-          "Name": "Systemic anticancer treatment"
+          "Name": "Medikamentellkreftbehandling",
+          "NameEn": "Systemic anticancer treatment"
         }
       ]
     },
     {
       "Id": "48",
       "Name": "OMOP",
+      "NameEn": "OMOP",
       "Children": [
         {
           "Id": "49",
-          "Name": "krg_omop"
+          "Name": "krg_omop",
+          "NameEn": "krg_omop"
         },
         {
           "Id": "50",
-          "Name": "blueberry_omop"
+          "Name": "blueberry_omop",
+          "NameEn": "blueberry_omop"
         },
         {
           "Id": "55",
-          "Name": "florence_omop"
+          "Name": "florence_omop",
+          "NameEn": "florence_omop"
         },
         {
           "Id": "57",
-          "Name": "OUS Digione"
+          "Name": "OUSDigiOne",
+          "NameEn": "OUS Digione"
         }
       ]
     }

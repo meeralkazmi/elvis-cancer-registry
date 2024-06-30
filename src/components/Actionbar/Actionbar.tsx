@@ -46,9 +46,9 @@ export const Actionbar: React.FC<IActionbar> = (props) => {
             throw new Error("Function not implemented.");
           }}
         />
-        <Box sx={{ mb: 2 }}>
+        {/* <Box sx={{ mb: 2 }}>
           <Export selectedVariables={props.data} />
-        </Box>
+        </Box> */}
       </Box>
     </Toolbar>
   );

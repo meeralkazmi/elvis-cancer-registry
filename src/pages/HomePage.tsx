@@ -4,7 +4,6 @@ import { useAppDispatch, useAppSelector } from "../config/store";
 import { RootLayout } from "../layouts/RootLayout";
 import { retrieveVariablesAsync } from "../slices/variableSlice";
 import { Actionbar, DataTable, InfoDialog } from "../components/";
-import { VariableService } from "../services/VariableService";
 
 interface IHomePage {}
 
@@ -19,7 +18,8 @@ const tableHeader = [
   {
     label: "Deliverables",
     key: "validForExtraction",
-    type: "string",
+    keyEn: "validForExtraction",
+    type: "number",
     sortable: true,
   },
   {
@@ -33,6 +33,12 @@ const tableHeader = [
     key: "techName",
     type: "string",
     sortable: true,
+  },
+  {
+    label: "",
+    key: "",
+    type: "",
+    sortable: false,
   },
 ];
 
@@ -50,12 +56,6 @@ export const HomePage: React.FC<IHomePage> = () => {
     return variables.value.map((variable) => {
       return {
         ...variable,
-        category: variable.category.name,
-        categoryEn: variable.category.nameEn,
-        dataType: variable.dataType.name,
-        dataTypeEn: variable.dataType.nameEn,
-        registrationMethod: variable.registrationMethod.name,
-        registrationMethodEn: variable.registrationMethod.nameEn,
         active: variable.status.name === "Aktiv",
       };
     });

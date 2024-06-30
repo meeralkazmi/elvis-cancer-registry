@@ -2,95 +2,117 @@
   "categories": [
     {
       "Id": "1",
-      "Name": "Person"
+      "Name": "Person",
+      "NameEn": "Person"
     },
     {
       "Id": "2",
-      "Name": "Disease history",
+      "Name": "Sykehistorie",
+      "NameEn": "Diseasehistory",
       "Children": [
         {
           "Id": "3",
-          "Name": "Medical history, not further specified"
+          "Name": "Sykehistorie, ikke nærmere spesifisert",
+          "NameEn": "Medicalhistorynotfurtherspecified"
         },
         {
           "Id": "4",
-          "Name": "Cause of examination"
+          "Name": "Årsak til utredning",
+          "NameEn": "Causeofexamination"
         },
         {
           "Id": "5",
-          "Name": "Health status at diagnostics and treatment"
+          "Name": "Helsetilstand ved utredning og behandling",
+          "NameEn": "Healthstatusatdiagnosticsandtreatment"
         }
       ]
     },
     {
       "Id": "6",
-      "Name": "Diagnostics",
+      "Name": "Diagnostikk",
+      "NameEn": "Diagnostics",
       "Children": [
         {
           "Id": "7",
-          "Name": "Diagnostics, not further specified"
+          "Name": "Diagnostikk, ikke nærmere spesifisert",
+          "NameEn": "Diagnosticmethods"
         },
         {
           "Id": "8",
-          "Name": "Diagnostic methods"
+          "Name": "Diagnostiske metoder",
+          "NameEn": "Diagnosticmethods"
         },
         {
           "Id": "9",
-          "Name": "Tumor characteristics and extent of disease"
+          "Name": "Tumorkarakteristika og utbredelse",
+          "NameEn": "Tumorcharacteristicsandextentofdisease"
         },
         {
           "Id": "10",
-          "Name": "Institution"
+          "Name": "Institusjon",
+          "NameEn": "Institution"
         }
       ]
     },
     {
       "Id": "11",
-      "Name": "Treatment",
+      "Name": "Behandling",
+      "NameEn": "Treatment",
       "Children": [
         {
           "Id": "12",
-          "Name": "Treatment, not further specified"
+          "Name": "Behandling, ikke nærmere spesifisert",
+          "NameEn": "Treatmentnotfurtherspecified"
         },
         {
           "Id": "13",
-          "Name": "Neoadjuvant therapy"
+          "Name": "Forbehandling",
+          "NameEn": "Neoadjuvanttherapy"
         },
         {
           "Id": "14",
-          "Name": "Surgery"
+          "Name": "Kirurgi",
+          "NameEn": "Surgery"
         },
         {
           "Id": "15",
-          "Name": "Radiotherapy"
+          "Name": "Strålebehandling",
+          "NameEn": "Radiotherapy"
         },
         {
           "Id": "16",
-          "Name": "Medical and other treatment"
+          "Name": "Medisinsk og annen behandling",
+          "NameEn": "Medicalandothertreatment"
         },
         {
           "Id": "17",
-          "Name": "Complications and evaluation after treatment"
+          "Name": "Komplikasjoner og evaluering etter behandling",
+          "NameEn": "Complicationsandevaluationaftertreatment"
         },
         {
           "Id": "18",
-          "Name": "Inclusion in clinical trial"
+          "Name": "Inklusjon i studie",
+          "NameEn": "Inclusioninclinicaltrial"
         },
         {
           "Id": "19",
-          "Name": "Indications and contraindications for treatment"
+          "Name": "Indikasjoner og kontraindikasjoner for behandling",
+          "NameEn": "Indicationsandcontraindicationsfortreatment"
         },
         {
           "Id": "20",
-          "Name": "Follow-up"
+          "Name": "Oppfølging",
+          "NameEn": "Followup"
         },
         {
           "Id": "21",
-          "Name": "PROMs"
+          "Name": "PROMs",
+          "NameEn": "PROMs"
         },
         {
           "Id": "22",
-          "Name": "CRN administration"
+          "Name": "CRN administrasjon",
+          "NameEn": "CRNadministration"
         }
       ]
     }
